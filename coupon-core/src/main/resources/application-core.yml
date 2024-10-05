@@ -1,1 +1,25 @@
-spring.application.name=coupon-core
+spring:
+  config:
+    activate:
+      on-profile: local
+  datasource:
+    hikari:
+      jdbc-url: jdbc:mysql://localhost:3307/coupon?useUnicode=yes&characterEncoding=UTF-8&rewriteBatchedStatements=true
+      driver-class-name: com.mysql.cj.jdbc.Driver
+      max-lifetime: 30000
+      maximum-pool-size: 10
+      connection-timeout: 3000
+      username: abcd
+      password: 1234
+  jpa:
+    hibernate:
+      ddl-auto: none
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true # 출력 SQL 이쁘게,,
+  data:
+    redis:
+      host: localhost
+      port: 6380
+
