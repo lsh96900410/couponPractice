@@ -25,13 +25,15 @@ public class CouponIssueService {
     @Transactional
     public void issue(long couponId, long userId){
 
-            Coupon coupon = findCoupon(couponId);
+            //Coupon coupon = findCoupon(couponId);
+            Coupon coupon = findCouponWithLock(couponId);
 
             coupon.issue();
 
             saveCouponIssue(couponId, userId);
 
     }
+
     /*
     트랜잭션 내부에서 lock 작업을 진행하는 경우 발생하는 문제점
 
@@ -54,6 +56,16 @@ public class CouponIssueService {
     public Coupon findCoupon(long couponId){
 
         return couponJPARepository.findById(couponId).orElseThrow(() -> {
+            throw new CouponIssueException(COUPON_NOT_EXIST,"쿠폰 정책이 존재하지 않습니다. %s".formatted(couponId));
+        });
+
+    }
+
+    /* MySQL Lock 설정 쿼리 */
+    @Transactional(readOnly = true)
+    public Coupon findCouponWithLock(long couponId){
+
+        return couponJPARepository.findCouponWithLock(couponId).orElseThrow(() -> {
             throw new CouponIssueException(COUPON_NOT_EXIST,"쿠폰 정책이 존재하지 않습니다. %s".formatted(couponId));
         });
 

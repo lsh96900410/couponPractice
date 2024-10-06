@@ -17,14 +17,28 @@ public class CouponIssueRequestService {
     private final Logger log = LoggerFactory.getLogger(this.getClass().getSimpleName());
 
 
+    // MySQL X Lock 설정 -> Record Read Lock
+    // SELECT ~~ FOR UPDATE : 조회 레코드에 대한 X-Lock 획득
     public void issueRequestV1(CouponIssueRequestDto requestDto){
 
-        distributeLockExecutor.execute( "lock_"+requestDto.couponId(),10000,10000,
+        couponIssueService.issue(requestDto.couponId(), requestDto.userId());
+
+        log.info("쿠폰 발급 완료. couponId: %s, userId: %s".formatted(requestDto.couponId(), requestDto.userId()));
+    }
+
+    /*
+    Redis Lock 설정 -> Lock 이름 설정을 통해 진행
+
+    public void issueRequestV1(CouponIssueRequestDto requestDto){
+
+        distributeLockExecutor.execute("lock_"+requestDto.couponId(),10000,10000,
                 () -> { couponIssueService.issue(requestDto.couponId(), requestDto.userId());
         });
 
         log.info("쿠폰 발급 완료. couponId: %s, userId: %s".formatted(requestDto.couponId(), requestDto.userId()));
     }
+    */
+
 
      /*
     public void issueRequestV1(CouponIssueRequestDto requestDto){
