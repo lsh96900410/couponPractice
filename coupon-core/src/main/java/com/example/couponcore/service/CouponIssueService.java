@@ -25,14 +25,30 @@ public class CouponIssueService {
     @Transactional
     public void issue(long couponId, long userId){
 
-        Coupon coupon = findCoupon(couponId);
+            Coupon coupon = findCoupon(couponId);
 
-        coupon.issue();
+            coupon.issue();
 
-        saveCouponIssue(couponId, userId);
+            saveCouponIssue(couponId, userId);
 
     }
+    /*
+    트랜잭션 내부에서 lock 작업을 진행하는 경우 발생하는 문제점
 
+    트랜잭션 시작
+    
+    lock 획득
+    Coupon coupon = findCoupon(couponId);  -> 1번 요청 Transaction Commit X + 2번 요청 조회 시 작업 과정 포함 X 데이터 조회
+    coupon.issue();
+    saveCouponIssue(couponId, userId);
+    lock 반납
+
+    1번 요청 
+
+    트랜잭션 커밋
+     */
+    
+    
 
     @Transactional(readOnly = true)
     public Coupon findCoupon(long couponId){
