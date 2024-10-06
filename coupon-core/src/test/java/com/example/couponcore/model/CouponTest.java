@@ -1,4 +1,4 @@
-package com.example.couponcore;
+package com.example.couponcore.model;
 
 
 import com.example.couponcore.exception.CouponIssueException;
